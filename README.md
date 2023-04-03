@@ -1,11 +1,7 @@
-# qtjack_bpm_tab
-- Gui for tabing BPM and sending periodical MIDI messages
+# qtjack_beat_detection
 - WIP!
- - tab button is working
-  - midi messages are sent, timing is accurate
- - planned: audio input is visualized
- - planned: audio input with beat detection
- - planned: dial to change phase of sended midi messages
+ - planned: visualize audio input 
+ - planned: visualize detected beats
 
 ## Info
 Dependencies:
@@ -32,16 +28,12 @@ majorx234@googlemail.com
 ## Usage
 - build project:
 ```
-git clone https://github.com/majorx234/qtjack_bpm_tab.git
-cd qtjack_bpm_tab
+git clone https://github.com/majorx234/qtjack_beat_detection.git
+cd qtjack_beat_detection
 mkdir build
 cd build
 cmake ..
 make
-```
-- run:
-```
-./bpm_tab_main
 ```
 ## Reference 
 - uses parts of analyzerplugin concept of Mixxx: (https://github.com/mixxxdj/mixxx.git)
@@ -51,15 +43,9 @@ make
 - used idea behind beat this BPM detection (https://www.clear.rice.edu/elec301/Projects01/beat_sync/beatalgo.html)  
 
 ## History
+- 2023-04-02 Move beatdetection algos to extra repo
 - 2022-06-23 Implement library for Beat This BPM detection algo and test functions
-- 2022-05-26 Add Super Circular Buffer structure to have circular buffer with continously data
-- 2022-05-23 Modify QM bpm detection for use in bpm_tab widget
-- 2022-05-21 Add Visualization fo Jack Input
-- 2022-05-20 Now timing behavior is accurate
-- 2022-05-19 switch to own repo
-- 2022-04-14 first version sending periodic Midi messsages
+- 2022-05-23 Modify QM bpm detection
 
 ## ToDo
 - beat detection on audio data
-- beat triggering of tab button
-- Add possibility to send midi beat clock
