@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(qtjack_bpm_tab
+project(qtjack_beat_detection
   DESCRIPTION "Qt program to tab BPM in GUI and send in periodic intervall Midi messages"
   LANGUAGES CXX)
 
@@ -150,6 +150,7 @@ target_link_libraries(analyzerqueenmarybeats
   buffering_utils
   detection_function
 )
+
 ####### Beatdetection BeatThis #######
 set(FILTERBANK_SOURCES
   src/beatthis/filterbank.cpp)
@@ -334,77 +335,22 @@ PRIVATE
   combfilter
 )
 
-####### BPM Tab #######
-set(AVRG_QUEUE_SOURCES
-  src/avrg_queue.cpp
-)
-set(AVRG_QUEUE_HEADERS
-  include/avrg_queue.hpp
-)
-
-set(AVRG_QUEUE_TEST_SOURCES
-  src/test/avrg_queue_test.cpp
-)
-
+####### Visualization #######
 set(WAVE_WIDGET_SOURCES
-  src/wave_widget.cpp
-  include/wave_widget.hpp
-)
-
-set(BPM_TAB_SOURCES
-  src/bpm_tab.cpp
-  include/bpm_tab.hpp
-)
-
-set(BPM_TAB_MAIN_SOURCES
-  src/bpm_tab_main.cpp
-)
-
-set(WAVE_WIDGET_TEST_SOURCES
-  include/test/main_window_test.hpp
-  src/test/main_window_test.cpp
-  src/test/wave_widget_test.cpp
+  src/wave_widget/wave_widget.cpp
+  include/wave_widget/wave_widget.hpp
 )
 
 QT5_WRAP_CPP(WAVE_WIDGET_MOCrcs
   ${WAVE_WIDGET_SOURCES}
 )
-
-QT5_WRAP_CPP(BPM_TAB_MOCrcs
-  ${BPM_TAB_SOURCES}
-)
-
-QT5_WRAP_UI(BPM_TAB_UISrcs
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/bpm_tab.ui
-)
-
-QT5_WRAP_CPP(WAVE_WIDGET_TEST_MOCrcs
-  ${WAVE_WIDGET_TEST_SOURCES}
-)
-
-add_library(avrg_queue)
-target_sources(avrg_queue
-  PRIVATE  ${AVRG_QUEUE_SOURCES}
-  PUBLIC ${AVRG_QUEUE_HEADERS}
-)
-target_include_directories(avrg_queue PRIVATE include)
-
-add_executable(avrg_queue_test
-  ${AVRG_QUEUE_TEST_SOURCES}
-)
-target_sources(avrg_queue_test
-  PRIVATE  ${AVRG_QUEUE_TEST_SOURCES}
-)
-target_include_directories(avrg_queue_test PRIVATE include)
-target_link_libraries(avrg_queue_test
-  avrg_queue
-)
-
 add_library(wave_widget
   ${WAVE_WIDGET_SOURCES}
   ${WAVE_WIDGET_MOCrcs}
 )
-target_include_directories(wave_widget PRIVATE include)
+target_include_directories(wave_widget PRIVATE 
+  include
+  include/wave_widget)
 target_include_directories(wave_widget PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(wave_widget SYSTEM
   PUBLIC
@@ -416,73 +362,26 @@ target_link_libraries(wave_widget PRIVATE
   Qt5::Widgets
 )
 
-add_executable(wave_widget_test)
-target_sources(wave_widget_test
-  PRIVATE  ${WAVE_WIDGET_TEST_SOURCES}
-  ${WAVE_WIDGET_TEST_MOCrcs}
+set(WAVE_WIDGET_DEBUGGER_SOURCES
+  include/wave_widget/main_window_test.hpp
+  src/wave_widget/main_window_test.cpp
+  src/wave_widget/wave_widget_test.cpp
 )
-target_include_directories(wave_widget_test PRIVATE include)
-target_link_libraries(wave_widget_test
+QT5_WRAP_CPP(WAVE_WIDGET_DEBUGGER_MOCrcs
+  ${WAVE_WIDGET_DEBUGGER_SOURCES}
+)
+add_executable(wave_widget_debugger)
+target_sources(wave_widget_debugger
+  PRIVATE  
+  ${WAVE_WIDGET_DEBUGGER_SOURCES}
+  ${WAVE_WIDGET_DEBUGGER_MOCrcs}
+)
+target_include_directories(wave_widget_debugger 
+  PRIVATE 
+  include
+  include/wave_widget)
+target_link_libraries(wave_widget_debugger
   wave_widget
   Qt5::Core
   Qt5::Widgets
 )
-add_library(bpm_tab)
-target_sources(bpm_tab
-  PRIVATE
-  ${BPM_TAB_SOURCES}
-  ${BPM_TAB_UISrcs}
-  ${BPM_TAB_MOCrcs}
-)
-QT5_WRAP_CPP(BPM_TAB_MAIN_MOCrcs
-  ${BPM_TAB_MAIN_SOURCES}
-)
-
-target_include_directories(bpm_tab PRIVATE include)
-target_include_directories(bpm_tab PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(bpm_tab SYSTEM
-  PUBLIC
-  ${Qt5Core_INCLUDE_DIRS}
-  ${Qt5Widgets_INCLUDE_DIRS}
-  ${JACK_INCLUDE_DIRS}
-  qtjack::qtjack
-)
-target_link_libraries(bpm_tab PRIVATE
-  qtjack::qtjack
-  Qt5::Core
-  Qt5::Widgets
-  ${JACK_LIBRARIES}
-  avrg_queue
-  wave_widget
-  Threads::Threads
-  analyzerqueenmarybeats
-)
-
-add_executable(bpm_tab_main)
-target_sources(bpm_tab_main
-  PRIVATE ${BPM_TAB_MAIN_MOCrcs}
-  PUBLIC ${BPM_TAB_MAIN_SOURCES}
-)
-target_include_directories(bpm_tab_main PRIVATE include)
-target_include_directories(bpm_tab_main PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(bpm_tab_main SYSTEM
-  PUBLIC
-  qtjack::qtjack
-  ${JACK_INCLUDE_DIRS}
-  ${Qt5Core_INCLUDE_DIRS}
-  ${Qt5Widgets_INCLUDE_DIRS}
-)
-
-target_link_libraries(bpm_tab_main
-  PRIVATE
-  Qt5::Core
-  Qt5::Widgets
-  qtjack::qtjack
-  bpm_tab
-)
-
-add_executable(super_cicular_buffer_test)
-target_sources(super_cicular_buffer_test
-  PRIVATE src/test/super_circular_buffer_test.cpp
-)
-target_include_directories(super_cicular_buffer_test PRIVATE include)
