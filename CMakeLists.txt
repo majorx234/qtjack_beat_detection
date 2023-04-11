@@ -379,9 +379,11 @@ target_sources(wave_widget_debugger
 target_include_directories(wave_widget_debugger 
   PRIVATE 
   include
-  include/wave_widget)
+  include/wave_widget
+  qtjack::qtjack)
 target_link_libraries(wave_widget_debugger
   wave_widget
   Qt5::Core
   Qt5::Widgets
+  qtjack::qtjack
 )

@@ -25,18 +25,35 @@
 #define MAIN_WINDOW_TEST_HPP_
 
 #include <QMainWindow>
+// QtJack includes
+#include <Client>
+#include <Processor>
+#include <RingBuffer>
+
 #include "wave_widget.hpp"
 
-class MainWindowTest : public QMainWindow
+class MainWindowTest : public QMainWindow, public QtJack::Processor
 {
   Q_OBJECT
  public:
   explicit MainWindowTest(QWidget *parent = 0);
   ~MainWindowTest();
-
+  void setupJackClient();
+  void process(int samples) override;
+  void audio_process_fct();
+ signals:
+  void on_limits_ready(float,float,float,float); 
  private:
   int timerId;
   WaveWidget wave_widget;
+  QtJack::Client _client;
+  unsigned int _sample_rate;
+  jack_nframes_t last_frame_time;
+  QtJack::AudioPort _audio_in_port[2];
+  QtJack::AudioRingBuffer _audio_ring_buffer[2];
+  size_t _audio_buffer_size;
+  QtJack::AudioSample* _audio_buffer[2];
+  size_t _new_samples_in_audio_buffer;
  protected:
   void timerEvent(QTimerEvent *event);
 };
