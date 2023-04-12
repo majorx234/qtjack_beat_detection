@@ -387,3 +387,9 @@ target_link_libraries(wave_widget_debugger
   Qt5::Widgets
   qtjack::qtjack
 )
+
+add_executable(super_cicular_buffer_test)
+target_sources(super_cicular_buffer_test
+  PRIVATE src/test/super_circular_buffer_test.cpp
+)
+target_include_directories(super_cicular_buffer_test PRIVATE include)

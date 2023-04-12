@@ -31,6 +31,7 @@
 #include <RingBuffer>
 
 #include "wave_widget.hpp"
+#include "super_circular_buffer.hpp"
 
 class MainWindowTest : public QMainWindow, public QtJack::Processor
 {
@@ -54,6 +55,7 @@ class MainWindowTest : public QMainWindow, public QtJack::Processor
   size_t _audio_buffer_size;
   QtJack::AudioSample* _audio_buffer[2];
   size_t _new_samples_in_audio_buffer;
+  SuperCircularBuffer<float> super_circular_buffer[2];
  protected:
   void timerEvent(QTimerEvent *event);
 };

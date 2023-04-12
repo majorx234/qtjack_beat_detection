@@ -30,6 +30,7 @@ MainWindowTest::MainWindowTest(QWidget *parent)
   , wave_widget(this)
   , _sample_rate(48000)
   , _audio_buffer_size(48000*30)
+  , super_circular_buffer{SuperCircularBuffer<float>(300,1024),SuperCircularBuffer<float>(300,1024)}
 {
   setCentralWidget(&wave_widget);
   setupJackClient();
@@ -67,6 +68,8 @@ void MainWindowTest::process(int samples) {
   // audio part
   _audio_in_port[0].buffer(samples).push(_audio_ring_buffer[0]);
   _audio_in_port[1].buffer(samples).push(_audio_ring_buffer[1]);
+  super_circular_buffer[0].add_chunk(_audio_buffer[0]);
+  super_circular_buffer[1].add_chunk(_audio_buffer[1]);
 }
 
 void MainWindowTest::timerEvent(QTimerEvent *event) {
